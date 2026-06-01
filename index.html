@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./fav.png">
+    <title>VexTrend - Premium Forex & Gold Signals</title>
+    <meta name="description" content="VexTrend delivers high-accuracy Forex, Gold, and Indices signals. Join thousands of profitable traders worldwide with our premium signal services.">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #161616;
+            --bg-elevated: #1c1c1c;
+            --text-primary: #ffffff;
+            --text-secondary: #c0c0c0;
+            --text-muted: #888888;
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #60a5fa;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 40%, #1d4ed8 100%);
+            --accent-gradient-hover: linear-gradient(135deg, #60a5fa 0%, #3b82f6 40%, #2563eb 100%);
+            --accent-gradient-soft: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.08) 100%);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(59, 130, 246, 0.3);
+            --green-profit: #22c55e;
+            --red-loss: #ef4444;
+            --gold: #f59e0b;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.25);
+            --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* ============ ANIMATIONS ============ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes pulse-glow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 45px rgba(59, 130, 246, 0.55);
+            }
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+        @keyframes ticker-scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        @keyframes borderPulse {
+            0%,
+            100% {
+                border-color: rgba(59, 130, 246, 0.3);
+            }
+            50% {
+                border-color: rgba(59, 130, 246, 0.7);
+            }
+        }
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============ NAVIGATION ============ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: all var(--transition-smooth);
+            padding: 0 1.5rem;
+        }
+        .nav.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            transition: opacity var(--transition-fast);
+        }
+        .nav-logo:hover {
+            opacity: 0.85;
+        }
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+        }
+        .nav-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            border-radius: 1px;
+            transition: width var(--transition-smooth);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-cta {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+        .nav-cta:hover {
+            box-shadow: 0 6px 30px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* ============ FLASH SALE BANNER ============ */
+        .flash-banner {
+            background: var(--accent-gradient);
+            color: #fff;
+            text-align: center;
+            padding: 10px 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease;
+            margin-top: 64px;
+        }
+        .flash-banner .flash-highlight {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 12px;
+            border-radius: var(--radius-full);
+            margin: 0 4px;
+            font-weight: 800;
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            padding: 80px 1.5rem 60px;
+            max-width: 1280px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--accent-gradient-soft);
+            border: 1px solid var(--border-accent);
+            color: var(--accent-blue-light);
+            padding: 8px 20px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 1.2rem;
+            animation: fadeInUp 0.6s ease 0.1s forwards;
+            opacity: 0;
+        }
+        .hero h1 .gradient-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            animation: fadeInUp 0.6s ease 0.2s forwards;
+            opacity: 0;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s forwards;
+            opacity: 0;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-smooth);
+            border: none;
+            font-family: var(--font-sans);
+            letter-spacing: 0.2px;
+        }
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.35);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.55);
+            transform: translateY(-3px);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-secondary:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateY(-3px);
+        }
+        .btn-lg {
+            padding: 16px 34px;
+            font-size: 1.05rem;
+        }
+
+        /* ============ LIVE TICKER ============ */
+        .ticker-section {
+            max-width: 1280px;
+            margin: 0 auto 40px;
+            padding: 0 1.5rem;
+        }
+        .ticker-label {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .ticker-wrap {
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 16px 0;
+            position: relative;
+        }
+        .ticker-track {
+            display: flex;
+            gap: 2rem;
+            animation: ticker-scroll 25s linear infinite;
+            width: max-content;
+        }
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-full);
+            white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+        }
+        .ticker-item .profit-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green-profit);
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+        }
+        .ticker-item .pair {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        .ticker-item .pips {
+            color: var(--green-profit);
+            font-weight: 700;
+        }
+
+        /* ============ STATS BAR ============ */
+        .stats-bar {
+            max-width: 1280px;
+            margin: 0 auto 60px;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 24px 16px;
+            transition: all var(--transition-smooth);
+        }
+        .stat-card:hover {
+            border-color: var(--border-accent);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-4px);
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* ============ SECTION STYLES ============ */
+        .section {
+            padding: 70px 1.5rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .section-tag {
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-blue-light);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        /* ============ FEATURES GRID ============ */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 28px 22px;
+            text-align: center;
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+        }
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        .feature-card:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 16px;
+            background: var(--accent-gradient-soft);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .feature-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .feature-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ============ PRICING ============ */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+        .pricing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 32px 24px;
+            text-align: center;
+            transition: all var(--transition-smooth);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card.popular {
+            border-color: var(--border-accent);
+            box-shadow: var(--shadow-glow);
+            transform: scale(1.03);
+            animation: borderPulse 3s ease-in-out infinite;
+        }
+        .pricing-card:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .pricing-card.popular:hover {
+            transform: scale(1.03) translateY(-6px);
+        }
+        .popular-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gradient);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+        }
+        .pricing-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+        .pricing-price {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 8px 0;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .pricing-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .pricing-features li {
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--accent-blue-light);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .btn-pricing {
+            width: 100%;
+            justify-content: center;
+            padding: 13px 20px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-smooth);
+            font-size: 0.9rem;
+            border: none;
+            font-family: var(--font-sans);
+            background: var(--accent-gradient);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+        }
+        .btn-pricing:hover {
+            box-shadow: 0 8px 28px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-pricing.outline {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            box-shadow: none;
+            color: var(--text-primary);
+        }
+        .btn-pricing.outline:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        /* ============ TESTIMONIALS ============ */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            transition: all var(--transition-smooth);
+        }
+        .testimonial-card:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-4px);
+        }
+        .testimonial-stars {
+            color: var(--gold);
+            font-size: 1rem;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+        .testimonial-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .testimonial-author {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        /* ============ NEWSLETTER ============ */
+        .newsletter-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            max-width: 480px;
+            margin: 20px auto 0;
+        }
+        .newsletter-form input {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: var(--radius-full);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-card);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+        .newsletter-form input:focus {
+            border-color: var(--accent-blue);
+        }
+        .newsletter-form button {
+            padding: 14px 28px;
+            border-radius: var(--radius-full);
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            transition: all var(--transition-smooth);
+            white-space: nowrap;
+        }
+        .newsletter-form button:hover {
+            box-shadow: 0 8px 28px rgba(59, 130, 246, 0.4);
+        }
+
+        /* ============ CTA BANNER ============ */
+        .cta-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-xl);
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow);
+        }
+        .cta-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cta-banner h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        .cta-banner p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .cta-banner .btn {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 40px 1.5rem 30px;
+            max-width: 1280px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .footer-disclaimer {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 850px;
+            margin: 0 auto 20px;
+        }
+        .footer-copy {
+            font-size: 0.8rem;
+            color: #555;
+        }
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color var(--transition-fast);
+        }
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stats-bar {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            .pricing-card.popular:hover {
+                transform: translateY(-6px);
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .newsletter-form {
+                flex-direction: column;
+            }
+            .ticker-item {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+            .section {
+                padding: 40px 1rem;
+            }
+            .cta-banner {
+                padding: 32px 20px;
+            }
+            .cta-banner h2 {
+                font-size: 1.4rem;
+            }
+            .flash-banner {
+                font-size: 0.75rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .pricing-price {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="nav" id="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">
+                    <img src="logo.png" alt="VexTrend logo" width="auto" height="40">
+
+                
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#testimonials">Reviews</a></li>
+                <li><a href="#cta-section">Join Us</a></li>
+            </ul>
+            <a href="https://t.me/+HsjMdX8jAjM2OTM1" target="_blank" rel="noopener noreferrer" class="nav-cta">
+                📲 Join Telegram
+            </a>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- FLASH BANNER -->
+    <div class="flash-banner">
+        ⚡ Flash Sale — <span class="flash-highlight">66% OFF</span> Lifetime Access • Limited Time Only ⚡
+    </div>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-badge">🚀 Trusted by 10,000+ Traders Worldwide</div>
+        <h1>Unlock a <span class="gradient-text">Lifetime</span> of Trading Growth & Success</h1>
+        <p>Thousands of traders trust VexTrend's unique forex signal services and software solutions to boost their trading profits across a multitude of countries and territories globally.</p>
+        <div class="hero-buttons">
+            <a href="https://t.me/+HsjMdX8jAjM2OTM1" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+                📲 Join Free Telegram Channel →
+            </a>
+            <a href="#pricing" class="btn btn-secondary btn-lg">
+                View Pricing Plans
+            </a>
+        </div>
+    </section>
+
+    <!-- LIVE TICKER -->
+    <div class="ticker-section">
+        <div class="ticker-label">📡 Live Signal Feed</div>
+        <div class="ticker-wrap">
+            <div class="ticker-track">
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">XAUUSD</span> <span class="pips">+56 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">NAS100</span> <span class="pips">+120 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">USDCAD</span> <span class="pips">+55 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">US30</span> <span class="pips">+65 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">EURUSD</span> <span class="pips">+42 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">GBPJPY</span> <span class="pips">+78 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">XAUUSD</span> <span class="pips">+56 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">NAS100</span> <span class="pips">+120 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">USDCAD</span> <span class="pips">+55 pips</span></div>
+                <div class="ticker-item"><span class="profit-dot"></span> <span class="pair">US30</span> <span class="pips">+65 pips</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar animate-on-scroll">
+        <div class="stat-card">
+            <div class="stat-value">79.15%</div>
+            <div class="stat-label">Win Rate</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">1:1.7</div>
+            <div class="stat-label">Avg R/R Trade</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">7.7%</div>
+            <div class="stat-label">Max Drawdown</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">35.12%</div>
+            <div class="stat-label">Best Month</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Support</div>
+        </div>
+    </div>
+
+    <!-- FEATURES SECTION -->
+    <section class="section" id="features">
+        <div class="section-header animate-on-scroll">
+            <div class="section-tag">Why Choose Us</div>
+            <h2 class="section-title">Our Transparency & Performance</h2>
+            <p class="section-subtitle">We champion transparency, trust, and accuracy. Our trade results are real, verifiable, and integral to showcasing our success.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📊</div>
+                <h3>Proof in Performance</h3>
+                <p>Real, verifiable trade results that solidify our reputation as a trustworthy signal provider.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🧠</div>
+                <h3>Analysis Simplified</h3>
+                <p>Complex strategies broken down into simple, actionable insights for confident trading.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📈</div>
+                <h3>Success Strategies</h3>
+                <p>Complete trading plan guidance to capitalize on profitable opportunities consistently.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🛡️</div>
+                <h3>Risk Management</h3>
+                <p>Expert advice on position sizing and risk control to protect your capital at all times.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING SECTION -->
+    <section class="section" id="pricing">
+        <div class="section-header animate-on-scroll">
+            <div class="section-tag">Pricing Plans</div>
+            <h2 class="section-title">Choose Your Edge</h2>
+            <p class="section-subtitle">Select the plan that fits your trading style. All plans include access to our premium Telegram signal channel.</p>
+        </div>
+        <div class="pricing-grid">
+            <!-- Monthly Subscription -->
+            <div class="pricing-card animate-on-scroll">
+                <div class="pricing-name">Monthly</div>
+                <div class="pricing-price">$25<span>/mo</span></div>
+                <p class="pricing-desc">Full access to all Forex & Gold signals, renewed monthly.</p>
+                <ul class="pricing-features">
+                    <li>All Forex Pairs (29+)</li>
+                    <li>Exclusive Gold Signals</li>
+                    <li>Telegram Channel Access</li>
+                    <li>24/7 Support</li>
+                    <li>Cancel Anytime</li>
+                </ul>
+                <a href="https://www.paypal.com/ncp/payment/MRHTUJ9YD4Q6A" target="_blank" rel="noopener noreferrer" class="btn-pricing">
+                    Subscribe Now
+                </a>
+            </div>
+            <!-- Lifetime Access -->
+            <div class="pricing-card popular animate-on-scroll">
+                <div class="popular-badge">🔥 Best Value</div>
+                <div class="pricing-name">Lifetime</div>
+                <div class="pricing-price">$190<span>/once</span></div>
+                <p class="pricing-desc">One-time payment. Lifetime access to the signal channel — never pay again.</p>
+                <ul class="pricing-features">
+                    <li>All Monthly Plan Features</li>
+                    <li>Lifetime Access — No Renewals</li>
+                    <li>Priority Signal Delivery</li>
+                    <li>Exclusive Market Insights</li>
+                    <li>One-Time Payment</li>
+                </ul>
+                <a href="https://www.paypal.com/ncp/payment/W3KWAK77QXTXN" target="_blank" rel="noopener noreferrer" class="btn-pricing">
+                    Get Lifetime Access
+                </a>
+            </div>
+            <!-- Copy Trading -->
+            <div class="pricing-card animate-on-scroll">
+                <div class="pricing-name">Copy Trading</div>
+                <div class="pricing-price">$35<span>/mo</span></div>
+                <p class="pricing-desc">Direct copy trading — signals auto-executed in your brokerage account.</p>
+                <ul class="pricing-features">
+                    <li>Automated Trade Execution</li>
+                    <li>All Signal Plans Included</li>
+                    <li>Real-Time Sync</li>
+                    <li>Full Risk Control</li>
+                    <li>Monthly Subscription</li>
+                </ul>
+                <a href="https://www.paypal.com/ncp/payment/VDEU4HB4BUQAG" target="_blank" rel="noopener noreferrer" class="btn-pricing outline">
+                    Start Copy Trading
+                </a>
+            </div>
+            <!-- Prop Firm Passing -->
+            <div class="pricing-card animate-on-scroll">
+                <div class="pricing-name">Prop Firm Pass</div>
+                <div class="pricing-price">$250<span>/lifetime</span></div>
+                <p class="pricing-desc">We help you pass any prop firm challenge — any account size, until you pass.</p>
+                <ul class="pricing-features">
+                    <li>Any Account Size</li>
+                    <li>Lifetime Service Until Pass</li>
+                    <li>Expert Guidance</li>
+                    <li>Proven Strategy</li>
+                    <li>One Challenge Guarantee</li>
+                </ul>
+                <a href="https://www.paypal.com/ncp/payment/VBED85GX9E9XY" target="_blank" rel="noopener noreferrer" class="btn-pricing outline">
+                    Pass Your Challenge
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section" id="testimonials">
+        <div class="section-header animate-on-scroll">
+            <div class="section-tag">Testimonials</div>
+            <h2 class="section-title">What Our Members Say</h2>
+            <p class="section-subtitle">Real feedback from traders who transformed their results with VexTrend signals.</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Never trusted Gold signals before… until VexTrend. Game-changing accuracy. I've been consistently profitable for 4 months straight."</p>
+                <div class="testimonial-author">— David M.</div>
+            </div>
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"The combo pack changed everything. Forex steady, Gold explosive, Indices smooth. VexTrend gave me structure I never had before."</p>
+                <div class="testimonial-author">— Ayaan K.</div>
+            </div>
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Steady wins on Forex… I didn't expect this level of consistency. The signals are clear, timely, and incredibly accurate. Highly recommend."</p>
+                <div class="testimonial-author">— Jenny R.</div>
+            </div>
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"US30 + NAS100 + DAX + S&P500 + USOIL — VexTrend gave me a complete trading structure. My portfolio has never looked better."</p>
+                <div class="testimonial-author">— Dimitri P.</div>
+            </div>
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"They made no fake promises about their signals. I was always in profit ever since I joined them. Try for yourself and see."</p>
+                <div class="testimonial-author">— Marqees L.</div>
+            </div>
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"The prop firm passing service is legit. They guided me through the entire challenge and I passed on my first attempt. Lifesaver!"</p>
+                <div class="testimonial-author">— Carlos V.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="section" id="cta-section">
+        <div class="cta-banner animate-on-scroll">
+            <h2>Ready to Transform Your Trading?</h2>
+            <p>Join thousands of profitable traders who trust VexTrend for consistent, high-accuracy signals. Your edge starts today.</p>
+            <a href="https://t.me/+HsjMdX8jAjM2OTM1" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+                📲 Join Telegram Channel Now →
+            </a>
+        </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="section">
+        <div class="newsletter-wrap animate-on-scroll">
+            <h2 style="font-weight:800;font-size:1.5rem;margin-bottom:8px;">Subscribe To Our Newsletter</h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;">High impact news, market trends, trade insights, pair forecasts and more.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing! Check your inbox.');">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Refund Policy</a>
+            <a href="https://t.me/+HsjMdX8jAjM2OTM1" target="_blank" rel="noopener noreferrer">Telegram Support</a>
+        </div>
+        <p class="footer-disclaimer">
+            <strong>Trading Disclaimer:</strong> Trading foreign exchange, commodities, indices, cryptocurrencies, CFDs, and other leveraged instruments involves a high level of risk and may result in total loss of capital. Past performance is not indicative of future results, and we make no guarantees of profits or performance. All trading decisions are made at your own risk, and you are solely responsible for any financial losses incurred.<br><br>
+            <strong>Software Disclaimer:</strong> The software and automation tools provided are intended solely for trade execution and management purposes. By purchasing or using these products, you confirm that you fully understand their functionality and the risks involved. VexTrend does not provide financial advice, does not manage trading accounts, and does not control client funds.<br><br>
+            <strong>Jurisdictional Restrictions:</strong> Our services are not intended for distribution or use in jurisdictions where financial promotion or investment advice requires regulatory authorization. Users are solely responsible for ensuring compliance with local laws.<br><br>
+            <strong>Payments & Refunds:</strong> All payments are governed by our published Terms and Refund Policy. This is a virtual digital service that cannot be returned and is therefore nonrefundable unless explicitly stated otherwise.
+        </p>
+        <p class="footer-copy">&copy; 2026 VexTrend. All rights reserved. | Designed with precision for serious traders.</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -40px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        let lastScrollY = 0;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            lastScrollY = scrollY;
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    const navHeight = navbar.offsetHeight;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset -
+                        navHeight - 20;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle (simple)
+        const mobileBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        let mobileMenuOpen = false;
+
+        mobileBtn.addEventListener('click', () => {
+            mobileMenuOpen = !mobileMenuOpen;
+            if (mobileMenuOpen) {
+                navLinks.style.display = 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '64px';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.background = 'rgba(10,10,10,0.98)';
+                navLinks.style.backdropFilter = 'blur(20px)';
+                navLinks.style.padding = '1.5rem';
+                navLinks.style.gap = '1.2rem';
+                navLinks.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+                navLinks.style.zIndex = '999';
+                mobileBtn.textContent = '✕';
+            } else {
+                navLinks.style.display = 'none';
+                mobileBtn.textContent = '☰';
+            }
+        });
+
+        // Reset mobile menu on resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navLinks.style.display = '';
+                navLinks.style.flexDirection = '';
+                navLinks.style.position = '';
+                navLinks.style.top = '';
+                navLinks.style.left = '';
+                navLinks.style.right = '';
+                navLinks.style.background = '';
+                navLinks.style.backdropFilter = '';
+                navLinks.style.padding = '';
+                navLinks.style.gap = '';
+                navLinks.style.borderBottom = '';
+                navLinks.style.zIndex = '';
+                mobileBtn.textContent = '☰';
+                mobileMenuOpen = false;
+            }
+        });
+
+        // Initialize first visible elements
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 40) {
+                el.classList.add('visible');
+            }
+        });
+
+        console.log('%c🚀 VexTrend %cPremium Signal Service %cReady',
+            'color:#3b82f6;font-size:1.5rem;font-weight:800;',
+            'color:#fff;font-size:1rem;',
+            'color:#22c55e;font-weight:700;');
+        console.log('%cJoin our Telegram: https://t.me/+HsjMdX8jAjM2OTM1', 'color:#f59e0b;');
+    </script>
+</body>
+</html>
